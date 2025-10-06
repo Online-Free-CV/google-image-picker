@@ -1,0 +1,64 @@
+{
+  "name": "@onlinefreecv/google-image-picker",
+  "version": "1.0.1",
+  "description": "Google Drive Image Picker (React/Next.js) for OnlineFreeCV",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "release": "standard-version",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <19",
+    "react-dom": ">=18.2.0 <19"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7",
+    "rimraf": "^6.0.1",
+    "standard-version": "^9.5.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onlinefreecv/google-image-picker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onlinefreecv/google-image-picker/issues"
+  },
+  "homepage": "https://github.com/onlinefreecv/google-image-picker#readme",
+  "engines": {
+    "node": ">=18.17",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "keywords": [
+    "google",
+    "picker",
+    "drive",
+    "react",
+    "nextjs",
+    "onlinefreecv"
+  ],
+  "author": "OnlineFreeCV"
+}
