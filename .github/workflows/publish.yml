@@ -11,7 +11,7 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write   # <-- REQUIRED for `npm publish --provenance`
+      id-token: write   # required for `npm publish --provenance`
 
     steps:
       - name: Checkout code
@@ -19,8 +19,7 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        # no "version" here; it will use package.json's "packageManager"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
