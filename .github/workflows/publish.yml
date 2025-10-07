@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
-      id-token: write   # required for `npm publish --provenance`
+      contents: write   # needed to push the version bump & tags
+      id-token: write   # needed for npm provenance
 
     steps:
       - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
-        # no "version" here; it will use package.json's "packageManager"
+        # no "version"; uses package.json "packageManager"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -43,7 +43,7 @@ jobs:
       - name: Bump version and generate changelog
         run: pnpm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push version bump & tags
         run: git push origin HEAD:main --follow-tags
