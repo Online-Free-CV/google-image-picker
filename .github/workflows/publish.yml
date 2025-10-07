@@ -9,23 +9,31 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      id-token: write   # <-- REQUIRED for `npm publish --provenance`
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
           registry-url: 'https://registry.npmjs.org/'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          cache: 'pnpm'
+          always-auth: true
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Configure Git
+      - name: Configure Git (for standard-version)
         run: |
           git config --global user.email "liaqatsaeed007@gmail.com"
           git config --global user.name "Liaqat Saeed"
@@ -38,7 +46,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Publish package
-        run: pnpm publish --access public --no-git-checks
+      - name: Push version bump & tags
+        run: git push origin HEAD:main --follow-tags
+
+      - name: Publish package (with provenance)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
