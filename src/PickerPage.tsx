@@ -1,3 +1,4 @@
+// src/PickerPage.tsx
 "use client";
 import { useEffect, useRef, useState } from "react";
 
@@ -10,16 +11,20 @@ declare global {
 
 const GAPI_URL = "https://apis.google.com/js/api.js";
 const GIS_URL = "https://accounts.google.com/gsi/client";
-const SCOPES =
-  "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file";
 
-type PickedFile = {
+export type PickedFile = {
   id: string;
   name: string;
   mimeType: string;
   thumbnailUrl?: string;
   webViewLink?: string;
   webContentLink?: string;
+};
+
+type Props = {
+  scopes: string; // ← REQUIRED: parent decides scopes
+  apiKey?: string;
+  clientId?: string;
 };
 
 async function loadScript(src: string) {
@@ -34,9 +39,11 @@ async function loadScript(src: string) {
   });
 }
 
-export default function PickerPage() {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PICKER_API_KEY!;
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
+export default function PickerPage({
+  scopes,
+  apiKey = process.env.NEXT_PUBLIC_GOOGLE_PICKER_API_KEY!,
+  clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+}: Props) {
   const [error, setError] = useState<string | null>(null);
   const tokenRef = useRef<string | null>(null);
   const tokenClientRef = useRef<any>(null);
@@ -51,7 +58,7 @@ export default function PickerPage() {
 
         tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
           client_id: clientId,
-          scope: SCOPES,
+          scope: scopes, // ← use prop
           callback: (resp: any) => {
             if (resp?.access_token) tokenRef.current = resp.access_token;
           },
@@ -63,7 +70,7 @@ export default function PickerPage() {
         setError(e?.message || "Failed to open Google Picker");
       }
     })();
-  }, []);
+  }, [apiKey, clientId, scopes]);
 
   function getAccessToken(prompt: "" | "consent") {
     return new Promise<string>((resolve, reject) => {
@@ -91,7 +98,7 @@ export default function PickerPage() {
       .setSelectFolderEnabled(false)
       .setMimeTypes("image/png,image/jpeg,image/jpg,image/webp");
 
-    const uploadView = new window.google.picker.DocsUploadView();
+    const uploadView = new window.google.picker.DocsUploadView(); // shows Upload tab (requires drive.file)
 
     const picker = new window.google.picker.PickerBuilder()
       .setDeveloperKey(apiKey)
@@ -106,7 +113,7 @@ export default function PickerPage() {
           window.close();
           return;
         }
-        const files: PickedFile[] = data.docs.map((d: any) => ({
+        const files: PickedFile[] = (data.docs || []).map((d: any) => ({
           id: d.id,
           name: d.name,
           mimeType: d.mimeType,
@@ -122,6 +129,7 @@ export default function PickerPage() {
   }
 
   function postToOpener(payload: unknown) {
+    // If you know your opener origin, replace "*" with it for security.
     if (window.opener) window.opener.postMessage(payload, "*");
   }
 
