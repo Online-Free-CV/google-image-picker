@@ -16,6 +16,7 @@ export type PickedFile = {
   thumbnailUrl?: string;
   publicUrl?: string;  // <img src=...>
   webViewLink?: string;
+  displayUrl: (size?: number) => string; // fallback <img src=...>
 };
 
 type Props = {
@@ -25,7 +26,7 @@ type Props = {
   onPicked: (files: PickedFile[]) => void;
   children: React.ReactNode;
   className?: string;
-
+  photoSize?: number;            // default: 800
   /** Option 1 settings */
   publicFolderId?: string;        // if you already know the folder id, pass it
   publicFolderName?: string;      // default: "OnlineFreeCV Public"
@@ -42,6 +43,9 @@ function includesDriveFile(scopes: string) {
 
 const toPublicImageUrl = (id: string) =>
   `https://drive.usercontent.google.com/uc?id=${id}&export=view`;
+
+const toDisplayImageUrl = (id: string, size: number) =>
+  `https://lh3.googleusercontent.com/d/${id}=s${size}`;
 
 async function loadScriptOnce(src: string) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -122,7 +126,7 @@ export const GoogleImagePicker: React.FC<Props> = ({
   onPicked,
   children,
   className,
-
+  photoSize = 400,
   publicFolderId,
   publicFolderName = "OnlineFreeCV Public",
   ensurePublicFolder = true,
@@ -269,6 +273,7 @@ export const GoogleImagePicker: React.FC<Props> = ({
               thumbnailUrl: d.thumbnailUrl,
               webViewLink: d.url,             // viewer
               publicUrl: toPublicImageUrl(d.id), // display directly
+              displayUrl: () => toDisplayImageUrl(d.id, photoSize), // fallback
             }));
             // NOTE: if org forbids public sharing, uploads to folder may still be private.
             // In that case, consider a fallback: copy to your CDN.

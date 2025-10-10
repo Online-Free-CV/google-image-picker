@@ -59,6 +59,7 @@ export default function ProfileImagePicker() {
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
       scopes="https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file"
       onPicked={handlePicked}
+      photoSize={400} // custom image resolution
     >
       <button className="btn">Pick from Google Drive</button>
     </GoogleImagePicker>
@@ -71,18 +72,20 @@ export default function ProfileImagePicker() {
 
 Each selected file returns the following fields:
 
-| Field          | Type   | Description                                      |
-|----------------|--------|--------------------------------------------------|
-| `id`           | string | Google Drive File ID                             |
-| `name`         | string | File name                                        |
-| `mimeType`     | string | MIME type (e.g. `image/png`)                     |
-| `thumbnailUrl` | string | Drive thumbnail (lightweight preview)            |
-| `publicUrl`    | string | Stable public image URL usable in `<img>` tags   |
-| `webViewLink`  | string | Google Drive viewer page (optional)              |
+| Field          | Type     | Description                                                                                |
+| -------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `id`           | `string` | Google Drive File ID                                                                       |
+| `name`         | `string` | File name                                                                                  |
+| `mimeType`     | `string` | MIME type (e.g. `image/png`)                                                               |
+| `thumbnailUrl` | `string` | Drive thumbnail (lightweight preview)                                                      |
+| `publicUrl`    | `string` | Stable public image URL usable in `<img>` tags                                             |
+| `webViewLink`  | `string` | Google Drive viewer page (optional)                                                        |
+| `displayUrl`   | `string` | Optimized image URL for embedding (from `lh3.googleusercontent.com`, respects `photoSize`) |
+
 
 **Example public image URL:**
 ```
-https://drive.google.com/uc?export=view&id=<FILE_ID>
+https://lh3.googleusercontent.com/d/<FILE_ID>=s<SIZE>
 ```
 
 ## 🧠 Notes
