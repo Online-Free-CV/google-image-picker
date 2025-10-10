@@ -1,6 +1,3 @@
-export { default as GoogleImagePickerButton } from "./GoogleImagePickerButton";
-export type {
-  PickedFile,
-  GoogleImagePickerButtonProps,
-} from "./GoogleImagePickerButton";
-export { default as PickerPage } from "./PickerPage";
+// src/index.ts
+export type { PickedFile } from "./GoogleImagePicker";
+export { GoogleImagePicker } from "./GoogleImagePicker";
