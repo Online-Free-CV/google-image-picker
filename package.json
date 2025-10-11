@@ -1,6 +1,6 @@
 {
   "name": "@onlinefreecv/google-image-picker",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Google Drive Image Picker (React/Next.js) for OnlineFreeCV",
   "type": "module",
   "sideEffects": false,
