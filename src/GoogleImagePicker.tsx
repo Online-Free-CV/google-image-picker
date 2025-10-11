@@ -16,7 +16,7 @@ export type PickedFile = {
   thumbnailUrl?: string;
   publicUrl?: string;  // <img src=...>
   webViewLink?: string;
-  displayUrl: (size?: number) => string; // fallback <img src=...>
+  displayUrl: string; // fallback <img src=...>
 };
 
 type Props = {
@@ -273,7 +273,7 @@ export const GoogleImagePicker: React.FC<Props> = ({
               thumbnailUrl: d.thumbnailUrl,
               webViewLink: d.url,             // viewer
               publicUrl: toPublicImageUrl(d.id), // display directly
-              displayUrl: () => toDisplayImageUrl(d.id, photoSize), // fallback
+              displayUrl: toDisplayImageUrl(d.id, photoSize), // fallback
             }));
             // NOTE: if org forbids public sharing, uploads to folder may still be private.
             // In that case, consider a fallback: copy to your CDN.
