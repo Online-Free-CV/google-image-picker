@@ -1,13 +1,17 @@
+// tsup.config.ts
 import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/index.ts"],
   format: ["esm"],
-  dts: true, // simpler and more stable than { entry: ... }
-  sourcemap: false,
+  dts: true,
   clean: true,
-  splitting: false,
   minify: true,
+  splitting: false,
+  injectStyle: true,     // injects CSS automatically
+  loader: {
+    ".css": "css"
+  },
   external: ["react", "react-dom"],
-  outExtension: () => ({ js: ".mjs" })
+  outExtension: () => ({ js: ".mjs" }),
 });
